@@ -1,0 +1,6 @@
+RewriteEngine On
+RewriteBase /library-of-readed-books
+RewriteRule ^index\.php$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /library-of-readed-books/index.php [L]

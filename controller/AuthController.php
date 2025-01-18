@@ -22,7 +22,7 @@ class AuthController{
     public function login(string $username, string $password){
         try {
             $this->delightauth->login($username, $password);
-            die('User is logged in');
+            header("Refresh:0;url=/library-of-readed-books/");
         }
         catch (\Delight\Auth\InvalidEmailException $e) {
             die('Wrong email address');
@@ -42,6 +42,7 @@ class AuthController{
         try {
             $this->delightauth->logOutEverywhereElse();
             $this->delightauth->destroySession();
+            header("Refresh:0;url=/library-of-readed-books/");
         }
         catch (\Delight\Auth\NotLoggedInException $e) {
             die('Not logged in');
@@ -68,6 +69,12 @@ class AuthController{
     }
 
     public function getCurrentUser() {
-        echo "Email: " . $this->delightauth->getEmail() . ", Username: " . $this->delightauth->getUsername();
+        if($this->delightauth->isLoggedIn()){
+            return [
+                "UserID" => $this->delightauth->getUserId(),
+                "Username" => $this->delightauth->getUsername(),
+                "Email" => $this->delightauth->getEmail()
+            ];
+        }
     }
 }
