@@ -9,15 +9,19 @@
             $this->currentUser = (new AuthController())->getCurrentUser();
         }
 
-        public function getView(string $view){
-            var_dump($this->currentUser);
+        public function renderTemplate(string $tmpname, array $args = []){
+            extract($args, EXTR_SKIP);
+            require(dirname(__DIR__, 1) . "/views/" . "{$tmpname}.view.php");
+        }
+
+        public function getView(string $view, array $args = []){
             if(!$this->currentUser || $this->currentUser && !$this->currentUser['UserID']){
-                require_once(dirname(__DIR__, 1) . "/views/" . 'login.view.php');
+                $this->renderTemplate('login', $args);
             }else{
                 if(isset($view) && $view !== '' && $view !== '?logout=1'){
-                    require_once(dirname(__DIR__, 1) . "/views/" . $view . '.view.php');
+                    $this->renderTemplate($view, $args);
                 }else if(!isset($view) || isset($view) && $view == ""){
-                    require_once(dirname(__DIR__, 1) . "/views/" . 'home.view.php');
+                    $this->renderTemplate('home', $args);
                 }
             }
         }
