@@ -2,6 +2,8 @@
     use App\Controller\BooksController;
     $booksList = (new BooksController())->getAllBooks();
 
+    $booksTable = '';
+
     foreach($booksList as $book){
         $booksTable .= "
         <tr>

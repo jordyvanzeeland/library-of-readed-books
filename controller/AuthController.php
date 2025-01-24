@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Controller;
+use App\Functions;
 
 # Controller for user authentication and authorization
 # This is using the DelightIM/Auth package:
@@ -12,10 +13,7 @@ class AuthController{
     private $config;
 
     public function __construct() {
-        $configfile = file_get_contents("config.json") ;
-        $this->config = json_decode($configfile);
-
-        $this->db = new \PDO('mysql:dbname=' . $this->config->db_name . ';host=' . $this->config->db_host . ';charset=utf8mb4', $this->config->db_user, $this->config->db_pass); 
+        $this->db = (new Functions())->DbConnect();
         $this->delightauth = new \Delight\Auth\Auth($this->db);
     }
 

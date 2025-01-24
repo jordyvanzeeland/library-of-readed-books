@@ -1,24 +1,22 @@
 <?php
-
     namespace App;
     use App\Controller\AuthController;
 
     class Functions{
-        public function pageController(){
-            $currentUser = (new AuthController())->getCurrentUser();
+        private $db;
+        private $config;
 
-            if(!$currentUser || $currentUser && !$currentUser['UserID']){
-                require_once(__DIR__ . "/views/" . 'login.view.php');
-            }else{
-                $urlslices = explode('/', $_SERVER['REQUEST_URI']);
-                
-                if(!isset($urlslices[2]) || isset($urlslices[2]) && $urlslices[2] == ""){
-                    require_once(__DIR__ . "/views/" . 'home.view.php');
-                }else if(isset($urlslices[2]) && $urlslices[2] !== '' && $urlslices[2] !== '?logout=1'){
-                    require_once(__DIR__ . "/views/" . $urlslices[2] . '.view.php');
-                }
-            }
+        # Get database credentials from a JSON file
+        # Then make a new PDO connection with the database
+
+        public function DbConnect(){
+            $configfile = file_get_contents("config.json") ;
+            $this->config = json_decode($configfile);
+            $this->db = new \PDO('mysql:dbname=' . $this->config->db_name . ';host=' . $this->config->db_host . ';charset=utf8mb4', $this->config->db_user, $this->config->db_pass); 
+            return $this->db;
         }
+
+        # Turn error reporting on or off
 
         public function debug(bool $switch){
             if($switch == true){
@@ -27,5 +25,4 @@
             }
         }
     }
-
 ?>

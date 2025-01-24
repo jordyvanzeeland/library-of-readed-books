@@ -1,11 +1,13 @@
 <?php 
     namespace App;
     require "./vendor/autoload.php"; 
-    require "./functions.php";
+    
+    use App\Functions;
     use App\Controller\AuthController;
+    use App\Controller\PageController;
 
-    $pagecontroller = (new Functions())->pageController();
     $debug = (new Functions())->debug(true);
+    $pagecontroller = (new PageController())->getView(explode('/', $_SERVER['REQUEST_URI'])[2]);
 
     if(isset($_GET['logout'])) {
         $delightauth = (new AuthController())->logout();
