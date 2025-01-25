@@ -19,7 +19,7 @@ class BooksController{
             $books->execute();
 
             $result = $books->fetchAll();
-            return $result;
+            echo json_encode($result);
         }catch(Exception $e){
             echo "Error: " . $e;
         }

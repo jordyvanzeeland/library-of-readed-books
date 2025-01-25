@@ -1,22 +1,3 @@
-<?php 
-    use App\Controller\BooksController;
-    $booksList = (new BooksController())->getAllBooks();
-
-    $booksTable = '';
-
-    foreach($booksList as $book){
-        $booksTable .= "
-        <tr data-id='" . $book['id'] . "' data-name='" . $book['name'] . "'>
-            <td>" . $book['name'] . "</td>
-            <td>" . $book['author'] . "</td>
-            <td>" . $book['genre'] . "</td>
-            <td>" . $book['readed'] . "</td>
-            <td>" . $book['rating'] . "</td>
-            <td><button onclick='deleteBook(event)'>Verwijderen</button></td>
-        </tr>";
-    }
-?>
-
 <script type="text/javascript">
     const addBook = async (event) => {
         event.preventDefault();
@@ -40,6 +21,7 @@
         .then(response => response.json())
         .then(data => {
             document.getElementById('message').innerHTML = data;
+            getBooks();
         });
     }
 
@@ -62,8 +44,41 @@
         .then(response => response.json())
         .then(data => {
             document.getElementById('message').innerHTML = data;
+            getBooks();
         });
     }
+
+    const getBooks = async () => {
+        fetch('/library-of-readed-books/actions.php', {
+            method: "POST",
+            headers: {
+                'Accept': 'application/json',
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                action: 'get'
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            const tableContent = document.getElementsByClassName('table-content')[0];
+            tableContent.innerHTML = '';
+            data.forEach(row => {
+                tableContent.innerHTML += `
+                <tr data-id=${row.id} data-name=${row.name}>
+                    <td>${row.name}</td>
+                    <td>${row.author}</td>
+                    <td>${row.genre}</td>
+                    <td>${row.readed}</td>
+                    <td>${row.rating}</td>
+                    <td>${row.en}</td>
+                    <td><button onclick='deleteBook(event)'>Verwijderen</button></td>
+                </tr>`;
+            })
+        });
+    }
+
+    getBooks();
 </script>
 
 
@@ -80,8 +95,8 @@
             <th>Rating</th>
         </tr>
     </thead>
-    <tbody>
-        <?php echo $booksTable ?>
+    <tbody class="table-content">
+     
     </tbody>
 </table>
 
