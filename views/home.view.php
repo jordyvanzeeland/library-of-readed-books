@@ -1,24 +1,4 @@
-<script type="module">
-    import Books from "./views/assets/js/Books.js";
-
-    const books = Books();
-    books.getBooks()
-
-    document.getElementById('addbook').addEventListener('submit', (event) => {
-        event.preventDefault();
-        books.addBook(event.target.book.value,event.target.author.value,event.target.genre.value,event.target.readed.value,event.target.rating.value,event.target.en.value);
-        event.target.reset();
-    })
-
-    document.querySelector('.table-content').addEventListener('click', function(event) {
-        if (event.target.classList.contains('delete-book')) {
-            const clickedId = event.target.dataset.id;
-            const clickedName = event.target.dataset.name;
-            books.deleteBook(clickedId, clickedName);
-        }
-    });
-</script>
-
+<?php require('includes/header.php'); ?>
 
 <h1>Library Of Readed Books</h1>
 <button onclick="location.href='?logout=1'" name="logout" id="logout">Uitloggen</button>
@@ -47,3 +27,5 @@
     <input type="submit" value="Toevoegen" />
 </form>
 <div id="message"></div>
+
+<?php require('includes/footer.php'); ?>

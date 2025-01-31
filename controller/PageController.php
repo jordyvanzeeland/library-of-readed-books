@@ -11,23 +11,22 @@
             $this->viewsfolder = dirname(__DIR__, 1) . "/views/";
         }
 
-        public function renderTemplate(string $tmpname, array $args = []){
-            extract($args, EXTR_SKIP);
+        public function renderTemplate(string $tmpname, ){
             require($this->viewsfolder . "{$tmpname}.view.php");
         }
 
-        public function getView(string $view, array $args = []){
+        public function getView(string $view){
             if(!$this->currentUser || $this->currentUser && !$this->currentUser['UserID']){
-                $this->renderTemplate('login', $args);
+                $this->renderTemplate('login');
             }else{
                 if(isset($view) && $view !== '' && $view !== '?logout=1'){
                     if(!file_exists($this->viewsfolder . "{$view}.view.php")){
-                        $this->renderTemplate('notfound', $args);
+                        $this->renderTemplate('notfound');
                     }else{
-                        $this->renderTemplate($view, $args);
+                        $this->renderTemplate($view);
                     }
                 }else if(!isset($view) || isset($view) && $view == ""){
-                    $this->renderTemplate('home', $args);
+                    $this->renderTemplate('home');
                 }
             }
         }
