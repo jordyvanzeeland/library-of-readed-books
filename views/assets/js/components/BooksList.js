@@ -2,33 +2,60 @@ import { fetchAction } from "../Functions.js";
 
 const BooksList = () => {
     const addBook = async (name, author, genre, readed, rating, en) => {
-        const data = await fetchAction({ action: 'add', book: name, author: author, genre: genre, readed: readed, rating: rating, en: en });
-        document.getElementById('message').innerHTML = data;
-        getBooks();
+        try{
+            const data = await fetchAction({ 
+                action: 'add', 
+                book: name, 
+                author: author, 
+                genre: genre, 
+                readed: readed, 
+                rating: rating, 
+                en: en 
+            });
+            document.getElementById('message').textContent = data.message;
+            getBooks();
+        }catch(error){
+            document.getElementById('message').textContent = "An error appeared";
+            console.error("Error adding book:", error);
+        }
     }
     
     const deleteBook = async (bookid, bookname) => {
-        const data = await fetchAction({ action: 'delete', bookid: bookid, book: bookname });
-        document.getElementById('message').innerHTML = data;
-        getBooks();
+        try{
+            const data = await fetchAction({ 
+                action: 'delete', 
+                bookid: bookid, 
+                book: bookname 
+            });
+            document.getElementById('message').textContent = data.message;
+            getBooks();
+        }catch(error){
+            document.getElementById('message').textContent = "An error appeared";
+            console.error("Error deleting book:", error);
+        }
     }
     
     const getBooks = async () => {
-        const data = await fetchAction({ action: 'get' });
-        const tableContent = document.getElementsByClassName('table-content')[0];
-        tableContent.innerHTML = '';
-        data.forEach(row => {
-            tableContent.innerHTML += `
-            <tr data-id=${row.id} data-name=${row.name}>
-                <td>${row.name}</td>
-                <td>${row.author}</td>
-                <td>${row.genre}</td>
-                <td>${row.readed}</td>
-                <td>${row.rating}</td>
-                <td>${row.en}</td>
-                <td><button data-id="${row.id}" data-name=${row.name} class="delete-book">Verwijderen</button></td>
-            </tr>`;
-        })
+        try{    
+            const data = await fetchAction({ 
+                action: 'get' 
+            });
+            const tableContent = document.getElementsByClassName('table-content')[0];
+            tableContent.innerHTML = data.map(({ id, name, author, genre, readed, rating, en }) => 
+                `<tr data-id=${id} data-name=${name}>
+                    <td>${name}</td>
+                    <td>${author}</td>
+                    <td>${genre}</td>
+                    <td>${readed}</td>
+                    <td>${rating}</td>
+                    <td>${en}</td>
+                    <td><button data-id="${id}" data-name=${name} class="delete-book">Verwijderen</button></td>
+                </tr>`
+            ).join("");
+        }catch(error){
+            document.getElementById('message').textContent = "An error appeared";
+            console.error("Error getting books:", error);
+        }
     }
 
     const render = () => {
@@ -36,7 +63,14 @@ const BooksList = () => {
 
         document.getElementById('addbook').addEventListener('submit', (event) => {
             event.preventDefault();
-            addBook(event.target.book.value,event.target.author.value,event.target.genre.value,event.target.readed.value,event.target.rating.value,event.target.en.value);
+            addBook(
+                event.target.book.value, 
+                event.target.author.value, 
+                event.target.genre.value, 
+                event.target.readed.value, 
+                event.target.rating.value, 
+                event.target.en.value
+            );
             event.target.reset();
         })
     
@@ -44,7 +78,10 @@ const BooksList = () => {
             if (event.target.classList.contains('delete-book')) {
                 const clickedId = event.target.dataset.id;
                 const clickedName = event.target.dataset.name;
-                deleteBook(clickedId, clickedName);
+                deleteBook(
+                    clickedId, 
+                    clickedName
+                );
             }
         });
     }
