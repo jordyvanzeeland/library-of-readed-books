@@ -59,6 +59,11 @@ h3{
     box-shadow: 1px 1px 10px rgba(0,0,0,0.1);
 }
 
+.bookslist h3{
+    margin-bottom: 40px;
+    margin-top: 5px;
+}
+
 .bookslist table tbody tr td{
     border-bottom: solid 1px #eee;
     padding: 10px 0;
@@ -106,4 +111,41 @@ div.dt-container .dt-paging .dt-paging-button.current, div.dt-container .dt-pagi
     background: rgb(16, 115, 95) !important;
     border: none !important;
     color: #ffffff !important;
+}
+
+.modal{
+    background: rgba(0,0,0,0.3);
+}
+
+.modal .modal-content{
+    padding: 10px;
+}
+
+.modal .modal-header{
+    border:none;
+}
+
+.btn-green{
+    background: rgb(16, 115, 95);
+    border: none;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 300;
+}
+
+.btn-green:hover{
+    background: rgb(16, 115, 95);
+    border: none;
+    color: #ffffff;
+}
+
+.add-book{
+    font-size: 14px;
+    float: right;
+}
+
+.message{
+    padding: 10px 20px;
+    margin-bottom: 20px;
+    border-radius: 10px;
 }

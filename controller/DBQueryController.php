@@ -22,25 +22,37 @@ class DBQueryController{
      * Handle the select query
      */
 
-    public function select(string $tablename, array $columns, array $where = []){
+    public function select(string $tablename, array $columns, array $where = [], array $order = []){
         $columns = implode(',', $columns);
         $whereQuery = '';
-        $whereParams = [];
+        $orderQuery = '';
+        $selectParams = [];
+        $orderParams = [];
 
         if(!empty($where)){
             $whereParts = [];
             foreach ($where as $key => $value) {
                 $param = ":" . $key;
                 $whereParts[] = $key . " = " . $param;
-                $whereParams[$param] = $value;
+                $selectParams[$param] = $value;
             }
             $whereQuery = " WHERE " . implode(' AND ', $whereParts);
         }
+
+        if(!empty($order)){
+            $orderParts = [];
+            foreach ($order as $key => $value) {
+                $direction = strtoupper($value) == 'DESC' ? 'DESC' : 'ASC';
+                $param = ":" . $key;
+                $orderParts[] = $key . " " . $direction;
+            }
+            $orderQuery = " ORDER BY $key $direction";
+        }
         
-        $query = "SELECT " . $columns . " FROM " . $tablename . $whereQuery;
+        $query = "SELECT " . $columns . " FROM " . $tablename . $whereQuery . $orderQuery;
 
         $books = $this->db->prepare($query);
-        $books->execute($whereParams);
+        $books->execute($selectParams);
         return $books->fetchAll();
     }
 

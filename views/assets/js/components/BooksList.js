@@ -12,10 +12,10 @@ const BooksList = () => {
                 rating: rating, 
                 en: en 
             });
-            document.getElementById('message').textContent = data.message;
+            document.getElementById('message').innerHTML = "<div class='alert alert-success'>" + data.message + "</div>";
             getBooks();
         }catch(error){
-            document.getElementById('message').textContent = "An error appeared";
+            document.getElementById('message').innerHTML = "<div class='alert alert-danger'>An error appeared</div>";
             console.error("Error adding book:", error);
         }
     }
@@ -27,10 +27,10 @@ const BooksList = () => {
                 bookid: bookid, 
                 book: bookname 
             });
-            document.getElementById('message').textContent = data.message;
+            document.getElementById('message').innerHTML = "<div class='alert alert-success'>" + data.message + "</div>";
             getBooks();
         }catch(error){
-            document.getElementById('message').textContent = "An error appeared";
+            document.getElementById('message').innerHTML = "<div class='alert alert-danger'>An error appeared</div>";
             console.error("Error deleting book:", error);
         }
     }
@@ -46,6 +46,9 @@ const BooksList = () => {
     
     const getBooks = async () => {
         try{    
+            let table = new DataTable('#DataTable');
+                table.destroy();
+
             const data = await fetchAction({ 
                 action: 'get'
             });
@@ -60,22 +63,24 @@ const BooksList = () => {
                     <td><button data-id="${id}" data-name=${name} class="delete-book"><i class="fa-solid fa-trash-can"></i></button></td>
                 </tr>`
             ).join("");
+
+            setTimeout(() => {
+                table = new DataTable('#DataTable', {
+                    dom: "rtp",
+                    order: [],
+                    responsive: true,
+                    autoWidth: false
+                });
+            }, 500)
+
         }catch(error){
-            document.getElementById('message').textContent = "An error appeared";
+            document.getElementById('message').innerHTML = "<div class='alert alert-danger'>An error appeared</div>";
             console.error("Error getting books:", error);
         }
     }
 
     const render = () => {
         getBooks();
-        setTimeout(() => {
-            let table = new DataTable('#DataTable', {
-                dom: "rtp",
-                order: [],
-                responsive: true,
-                autoWidth: false
-            });
-        }, 200)
         
 
         document.getElementById('addbook').addEventListener('submit', (event) => {
@@ -89,6 +94,7 @@ const BooksList = () => {
                 event.target.en.value
             );
             event.target.reset();
+            document.querySelector('.modal').style.display = 'none';
         })
     
         document.querySelector('.table-content').addEventListener('click', function(event) {
@@ -100,6 +106,14 @@ const BooksList = () => {
                     clickedName
                 );
             }
+        });
+
+        document.querySelector('.add-book').addEventListener('click', function(event) {
+            document.querySelector('.modal').style.display = 'block';
+        });
+
+        document.querySelector('.btn-close').addEventListener('click', function(event) {
+            document.querySelector('.modal').style.display = 'none';
         });
     }
     
