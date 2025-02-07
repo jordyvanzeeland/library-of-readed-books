@@ -1,4 +1,109 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Public+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+
 body{
-    margin: 0;
-    padding: 0;
+    background: rgb(240,241,246); 
+    font-family: "Poppins", serif;
+    font-size: 14px;
+}
+
+h3{
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.header .navbar{
+    background-color: transparent !important;
+    padding: 30px 0; 
+}
+
+.header .navbar-brand{
+    font-weight:300;
+    font-size:16px;
+    margin-right: 50px;
+}
+
+.header .icon{
+    background: rgb(16, 115, 95);
+    display: inline-block;
+    border-radius: 5px;
+    color: #ffffff;
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    font-size: 20px;
+    font-weight: 500;
+    margin-right: 10px;
+}
+
+.header #logout{
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.header i{
+    color: rgb(16, 115, 95);
+    margin-right: 5px;
+}
+
+.header #logout i{
+    margin-right:5px;
+}
+
+.bookslist{
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 40px;
+    box-shadow: 1px 1px 10px rgba(0,0,0,0.1);
+}
+
+.bookslist table tbody tr td{
+    border-bottom: solid 1px #eee;
+    padding: 10px 0;
+    font-size: 14px;
+    font-weight: 300;
+}
+
+.bookslist .catColor{
+    border-radius: 10px;
+    color: #ffffff;
+    display: inline-block;
+    padding: 5px 20px;
+}
+
+button.delete-book{
+    border: none;
+    background: red;
+    color: #ffffff;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+td.rating{
+    color: orange;
+}
+
+#DataTable th{
+    font-size: 14px;
+    font-weight: 500;
+    padding: 10px 0;
+    border-bottom: solid 1px #eee;
+}
+
+#DataTable tr:last-child td{
+    border-bottom: solid 1px #eee;
+}
+
+.dt-paging{
+    border: none;
+    margin-top: 30px;
+    text-align: center;
+}
+
+div.dt-container .dt-paging .dt-paging-button.current, div.dt-container .dt-paging .dt-paging-button:hover{
+    background: rgb(16, 115, 95) !important;
+    border: none !important;
+    color: #ffffff !important;
 }

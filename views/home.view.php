@@ -1,21 +1,24 @@
 <?php require('includes/header.php'); ?>
 
-<h1>Library Of Readed Books</h1>
-<button onclick="location.href='?logout=1'" name="logout" id="logout">Uitloggen</button>
-
-<table>
-    <thead>
-        <tr>
-            <th>Boek</th>
-            <th>Schrijver</th>
-            <th>Genre</th>
-            <th>Gelezen</th>
-            <th>Rating</th>
-        </tr>
-    </thead>
-    <tbody class="table-content">
-    </tbody>
-</table>
+<div class="container">
+<div class="bookslist">
+    <h3>Gelezen boeken</h3>
+    <table id="DataTable" width="100%">
+        <thead>
+            <tr>
+                <th>Boek</th>
+                <th>Schrijver</th>
+                <th>Genre</th>
+                <th>Gelezen</th>
+                <th>Rating</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody class="table-content">
+        </tbody>
+    </table>
+</div>
+</div>
 
 <form method="POST" id="addbook">
     <input type="text" name="book" placeholder="Boeknaam" required/>
