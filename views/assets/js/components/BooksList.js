@@ -7,7 +7,7 @@ const BooksList = () => {
         });
 
         document.querySelector('.readingyears').innerHTML = data.map(({ year, count}) => 
-            `<li>${year}</li>`
+            `<li ${year === localStorage.getItem('year') || year === new Date().getFullYear() ? 'class="current"' : ''}>${year}</li>`
         ).join("");
 
         return data;
