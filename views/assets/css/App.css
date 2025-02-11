@@ -149,3 +149,21 @@ div.dt-container .dt-paging .dt-paging-button.current, div.dt-container .dt-pagi
     margin-bottom: 20px;
     border-radius: 10px;
 }
+
+.readingyears{
+    margin-left: 10px;
+}
+
+.readingyears li{
+    list-style-type: none;
+    display: inline-block;
+    margin-right: 5px;
+    background: #ffffff;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.readingyears li.current{
+    background: rgb(16, 115, 95);
+    color: #ffffff;
+}

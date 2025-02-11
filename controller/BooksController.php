@@ -48,6 +48,17 @@ class BooksController {
         return json_encode($book);
     }
 
+    public function getReadingYears(){
+        $this->userAuthenticated();
+
+        try {
+            $years = $this->dbQuery->select('books', ["YEAR(readed) as year", "COUNT(YEAR(readed)) as yearCount"], [], "YEAR(readed)");
+            echo json_encode($years);
+        } catch (PDOException $e) {
+            echo json_encode(["message" => "Error: " . $e]);
+        }
+    }
+
     /**
      * Retrieve all books
      */
@@ -57,6 +68,21 @@ class BooksController {
 
         try {
             $books = $this->dbQuery->select('books', ["*"]);
+            echo json_encode($books);
+        } catch (PDOException $e) {
+            echo json_encode(["message" => "Error: " . $e]);
+        }
+    }
+
+    /**
+     * Retrieve all books by yeay
+     */
+
+     public function getBooksByYear(string $year) {
+        $this->userAuthenticated();
+
+        try {
+            $books = $this->dbQuery->select('books', ["*"], ['YEAR(readed)' => $year]);
             echo json_encode($books);
         } catch (PDOException $e) {
             echo json_encode(["message" => "Error: " . $e]);

@@ -1,6 +1,18 @@
 import { fetchAction } from "../Functions.js";
 
 const BooksList = () => {
+    const getReadingYears = async() => {
+        const data = await fetchAction({ 
+            action: 'getYears', 
+        });
+
+        document.querySelector('.readingyears').innerHTML = data.map(({ year, count}) => 
+            `<li>${year}</li>`
+        ).join("");
+
+        return data;
+    }
+
     const addBook = async (name, author, genre, readed, rating, en) => {
         try{
             const data = await fetchAction({ 
@@ -44,13 +56,14 @@ const BooksList = () => {
         return stars;
     }
     
-    const getBooks = async () => {
+    const getBooks = async (year) => {
         try{    
             let table = new DataTable('#DataTable');
                 table.destroy();
 
             const data = await fetchAction({ 
-                action: 'get'
+                action: 'get',
+                year: year ? year : new Date().getFullYear()
             });
             const tableContent = document.getElementsByClassName('table-content')[0];
             tableContent.innerHTML = data.map(({ id, name, author, genre, readed, rating, en }) => 
@@ -80,9 +93,9 @@ const BooksList = () => {
     }
 
     const render = () => {
-        getBooks();
+        getReadingYears();
+        getBooks(localStorage.getItem('year') ? localStorage.getItem('year') : '');
         
-
         document.getElementById('addbook').addEventListener('submit', (event) => {
             event.preventDefault();
             addBook(

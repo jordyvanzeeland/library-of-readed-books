@@ -22,17 +22,23 @@ class DBQueryController{
      * Handle the select query
      */
 
-    public function select(string $tablename, array $columns, array $where = [], array $order = []){
+    public function select(string $tablename, array $columns, array $where = [], string $groupby = '', array $order = []){
         $columns = implode(',', $columns);
         $whereQuery = '';
         $orderQuery = '';
+        $groupQuery = '';
         $selectParams = [];
         $orderParams = [];
 
         if(!empty($where)){
             $whereParts = [];
             foreach ($where as $key => $value) {
-                $param = ":" . $key;
+                if($key == "YEAR(readed)"){
+                    $param = ":year";
+                }else{
+                    $param = ":" . $key;
+                }
+                
                 $whereParts[] = $key . " = " . $param;
                 $selectParams[$param] = $value;
             }
@@ -48,8 +54,12 @@ class DBQueryController{
             }
             $orderQuery = " ORDER BY $key $direction";
         }
+
+        if(!empty($groupby)){
+            $groupQuery = ' GROUP BY ' . $groupby;
+        }
         
-        $query = "SELECT " . $columns . " FROM " . $tablename . $whereQuery . $orderQuery;
+        $query = "SELECT " . $columns . " FROM " . $tablename . $whereQuery . $orderQuery . $groupQuery;
 
         $books = $this->db->prepare($query);
         $books->execute($selectParams);

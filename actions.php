@@ -39,7 +39,16 @@ class JSActionsController{
         return $this->bookscontroller->getAllBooks();
     }
 
+    private function getBooksofYear($year){
+        return $this->bookscontroller->getBooksByYear($year);
+    }
+    private function getReadingYears(){
+        return $this->bookscontroller->getReadingYears();
+    }
+
     public function handleRequest(){
+        $year = !empty($this->data['year']) ? $this->data['year'] : '';
+
         switch ($this->action) {
             case 'add':
                 $this->insertBook();
@@ -47,8 +56,16 @@ class JSActionsController{
             case 'delete':
                 $this->deleteBook();
                 break;
+            case 'getYears':
+                $this->getReadingYears();
+                break;
             default:
-                $this->getBooks();
+                if($year){
+                    $this->getBooksofYear($year);
+                }else{
+                    $this->getBooks();
+                }
+                
                 break;
         }
     }
