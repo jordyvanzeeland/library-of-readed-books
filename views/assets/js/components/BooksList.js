@@ -7,7 +7,7 @@ const BooksList = () => {
         });
 
         document.querySelector('.readingyears').innerHTML = data.map(({ year, count}) => 
-            `<li ${year === localStorage.getItem('year') || year === new Date().getFullYear() ? 'class="current"' : ''}>${year}</li>`
+            `<li data-id="${year}" class="yearbtn ${year == localStorage.getItem('year') ? "current" : ''}">${year}</li>`
         ).join("");
 
         return data;
@@ -58,9 +58,6 @@ const BooksList = () => {
     
     const getBooks = async (year) => {
         try{    
-            let table = new DataTable('#DataTable');
-                table.destroy();
-
             const data = await fetchAction({ 
                 action: 'get',
                 year: year ? year : new Date().getFullYear()
@@ -76,16 +73,6 @@ const BooksList = () => {
                     <td><button data-id="${id}" data-name=${name} class="delete-book"><i class="fa-solid fa-trash-can"></i></button></td>
                 </tr>`
             ).join("");
-
-            setTimeout(() => {
-                table = new DataTable('#DataTable', {
-                    dom: "rtp",
-                    order: [],
-                    responsive: true,
-                    autoWidth: false
-                });
-            }, 500)
-
         }catch(error){
             document.getElementById('message').innerHTML = "<div class='alert alert-danger'>An error appeared</div>";
             console.error("Error getting books:", error);
@@ -94,6 +81,11 @@ const BooksList = () => {
 
     const render = () => {
         getReadingYears();
+        
+        if(!localStorage.getItem('year')){
+            localStorage.setItem('year', new Date().getFullYear());
+        }
+
         getBooks(localStorage.getItem('year') ? localStorage.getItem('year') : '');
         
         document.getElementById('addbook').addEventListener('submit', (event) => {
@@ -127,6 +119,21 @@ const BooksList = () => {
 
         document.querySelector('.btn-close').addEventListener('click', function(event) {
             document.querySelector('.modal').style.display = 'none';
+        });
+
+        document.querySelector('.readingyears').addEventListener('click', function(event) {
+            if (event.target.classList.contains('yearbtn')) {
+                
+                for (var item of event.target.parentNode.children) {
+                    item.classList.remove('current');
+                }
+                
+                event.target.classList.add('current')
+                
+                const clickedyear = event.target.dataset.id;
+                localStorage.setItem('year', clickedyear);
+                getBooks(clickedyear);
+            }
         });
     }
     
