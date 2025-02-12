@@ -1,4 +1,5 @@
 <?php require('includes/header.php'); ?>
+<?php require('includes/navbar.php'); ?>
 
 <div class="container">
 <div id="message"></div>
