@@ -20,19 +20,19 @@ class AuthController{
     public function login(string $username, string $password){
         try {
             $this->delightauth->login($username, $password);
-            header("Refresh:0;url=/library-of-readed-books/");
+            echo json_encode($this->getCurrentUser());
         }
         catch (\Delight\Auth\InvalidEmailException $e) {
-            die('Wrong email address');
+            echo 'Wrong email address';
         }
         catch (\Delight\Auth\InvalidPasswordException $e) {
-            die('Wrong password');
+            echo 'Wrong password';
         }
         catch (\Delight\Auth\EmailNotVerifiedException $e) {
-            die('Email not verified');
+            echo 'Email not verified';
         }
         catch (\Delight\Auth\TooManyRequestsException $e) {
-            die('Too many requests');
+            echo 'Too many requests';
         }
     }
 
@@ -44,25 +44,6 @@ class AuthController{
         }
         catch (\Delight\Auth\NotLoggedInException $e) {
             die('Not logged in');
-        }
-    }
-
-    public function register(string $email, string $password, string $username){
-        try {
-            $userId = $this->delightauth->register($email, $password, $username);
-            die('Nieuwe gebruiker aangemeld');
-        }
-        catch (\Delight\Auth\InvalidEmailException $e) {
-            die('Invalid email address');
-        }
-        catch (\Delight\Auth\InvalidPasswordException $e) {
-            die('Invalid password');
-        }
-        catch (\Delight\Auth\UserAlreadyExistsException $e) {
-            die('User already exists');
-        }
-        catch (\Delight\Auth\TooManyRequestsException $e) {
-            die('Too many requests');
         }
     }
 

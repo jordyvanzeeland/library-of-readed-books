@@ -1,4 +1,5 @@
 import Books from "./components/BooksList.js";
+import Login from "./components/Login.js";
 
-const books = Books();
-books.render()
+Login().render()
+Books().render()

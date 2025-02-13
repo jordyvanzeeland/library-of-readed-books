@@ -2,6 +2,7 @@
 namespace App;
 require "./vendor/autoload.php"; 
 use App\Controller\BooksController;
+use App\Controller\AuthController;
 
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
@@ -10,11 +11,13 @@ class JSActionsController{
     private $data;
     private $action;
     private $bookscontroller;
+    private $authcontroller;
 
     public function __construct(){
         $this->data = json_decode(file_get_contents('php://input'), true);
         $this->action = $this->data['action'];
         $this->bookscontroller = new BooksController();
+        $this->authcontroller = new AuthController();
     }
 
     private function insertBook(){
@@ -46,6 +49,10 @@ class JSActionsController{
         return $this->bookscontroller->getReadingYears();
     }
 
+    private function authUser(){
+        return $this->authcontroller->login($this->data['username'], $this->data['password']);
+    }
+
     public function handleRequest(){
         $year = !empty($this->data['year']) ? $this->data['year'] : '';
 
@@ -58,6 +65,9 @@ class JSActionsController{
                 break;
             case 'getYears':
                 $this->getReadingYears();
+                break;
+            case 'auth':
+                $this->authUser();
                 break;
             default:
                 if($year){

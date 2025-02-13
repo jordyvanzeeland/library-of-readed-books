@@ -2,24 +2,24 @@
 
 <?php
 
-use App\Controller\AuthController;
+// use App\Controller\AuthController;
 
-if(isset($_POST['submitlogin'])){
-    $delightauth = (new AuthController())->login($_POST['loginmail'], $_POST['loginpass']);
-}
+// if(isset($_POST['submitlogin'])){
+//     $delightauth = (new AuthController())->login($_POST['loginmail'], $_POST['loginpass']);
+// }
 
 ?>
 <div class="container">
     <div class="login">
-        <a class="navbar-brand" href="#" style="margin-bottom:30px;display:block;"><div class="icon">L</div>Library of Readed Books</a>
-        <form method="POST">
+        <a class="navbar-brand loginlogo" href="#" style="margin-bottom:30px;display:block;"><div class="icon">L</div>Library of Readed Books</a>
+        <form method="POST" class="loginform">
         <div class="form-group" style="margin-bottom: 20px;">
             <label class="form-check-label" for="loginmail">E-mailadres</label>    
             <input type="text" class="form-control" name="loginmail" id="loginmail" aria-describedby="emailHelp">
         </div>
         <div class="form-group" style="margin-bottom: 20px;">
         <label class="form-check-label" for="loginpass">Wachtwoord</label>    
-            <input type="text" class="form-control" name="loginpass" id="loginpass">
+            <input type="password" class="form-control" name="loginpass" id="loginpass">
         </div>
         <button type="submit" name="submitlogin" id="submitlogin"  class="btn btn-green">Inloggen</button>
         </form>

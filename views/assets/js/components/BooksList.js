@@ -2,15 +2,27 @@ import { fetchAction } from "../Functions.js";
 
 const BooksList = () => {
     const getReadingYears = async() => {
-        const data = await fetchAction({ 
-            action: 'getYears', 
-        });
+        try{
+            const data = await fetchAction({ 
+                action: 'getYears', 
+            });
 
-        document.querySelector('.readingyears').innerHTML = data.map(({ year, count}) => 
-            `<li data-id="${year}" class="yearbtn ${year == localStorage.getItem('year') ? "current" : ''}">${year}</li>`
-        ).join("");
+            const readingyears = document.querySelector('.readingyears');
+            if(readingyears){
+                readingyears.innerHTML = data.map(({ year, count}) => 
+                    `<li data-id="${year}" class="yearbtn ${year == localStorage.getItem('year') ? "current" : ''}">${year}</li>`
+                ).join("");
+            }
+    
+            return data;
+        }catch(error){
+            const message = document.getElementById('message');
 
-        return data;
+            if(message){
+                document.getElementById('message').innerHTML = "<div class='alert alert-danger'>An error appeared</div>";
+                console.error("Error adding book:", error);
+            }
+        }
     }
 
     const addBook = async (name, author, genre, readed, rating, en) => {
@@ -27,8 +39,12 @@ const BooksList = () => {
             document.getElementById('message').innerHTML = "<div class='alert alert-success'>" + data.message + "</div>";
             getBooks();
         }catch(error){
-            document.getElementById('message').innerHTML = "<div class='alert alert-danger'>An error appeared</div>";
-            console.error("Error adding book:", error);
+            const message = document.getElementById('message');
+
+            if(message){
+                document.getElementById('message').innerHTML = "<div class='alert alert-danger'>An error appeared</div>";
+                console.error("Error adding book:", error);
+            }
         }
     }
     
@@ -42,8 +58,12 @@ const BooksList = () => {
             document.getElementById('message').innerHTML = "<div class='alert alert-success'>" + data.message + "</div>";
             getBooks();
         }catch(error){
-            document.getElementById('message').innerHTML = "<div class='alert alert-danger'>An error appeared</div>";
-            console.error("Error deleting book:", error);
+            const message = document.getElementById('message');
+
+            if(message){
+                document.getElementById('message').innerHTML = "<div class='alert alert-danger'>An error appeared</div>";
+                console.error("Error adding book:", error);
+            }
         }
     }
 
@@ -74,8 +94,12 @@ const BooksList = () => {
                 </tr>`
             ).join("");
         }catch(error){
-            document.getElementById('message').innerHTML = "<div class='alert alert-danger'>An error appeared</div>";
-            console.error("Error getting books:", error);
+            const message = document.getElementById('message');
+
+            if(message){
+                document.getElementById('message').innerHTML = "<div class='alert alert-danger'>An error appeared</div>";
+                console.error("Error adding book:", error);
+            }
         }
     }
 
@@ -87,54 +111,72 @@ const BooksList = () => {
         }
 
         getBooks(localStorage.getItem('year') ? localStorage.getItem('year') : '');
+        const addForm = document.getElementById('addbook');
         
-        document.getElementById('addbook').addEventListener('submit', (event) => {
-            event.preventDefault();
-            addBook(
-                event.target.book.value, 
-                event.target.author.value, 
-                event.target.genre.value, 
-                event.target.readed.value, 
-                event.target.rating.value, 
-                event.target.en.value
-            );
-            event.target.reset();
-            document.querySelector('.modal').style.display = 'none';
-        })
-    
-        document.querySelector('.table-content').addEventListener('click', function(event) {
-            if (event.target.classList.contains('delete-book')) {
-                const clickedId = event.target.dataset.id;
-                const clickedName = event.target.dataset.name;
-                deleteBook(
-                    clickedId, 
-                    clickedName
+        if(addForm){
+            addForm.addEventListener('submit', (event) => {
+                event.preventDefault();
+                addBook(
+                    event.target.book.value, 
+                    event.target.author.value, 
+                    event.target.genre.value, 
+                    event.target.readed.value, 
+                    event.target.rating.value, 
+                    event.target.en.value
                 );
-            }
-        });
+                event.target.reset();
+                document.querySelector('.modal').style.display = 'none';
+            })
+        }
 
-        document.querySelector('.add-book').addEventListener('click', function(event) {
-            document.querySelector('.modal').style.display = 'block';
-        });
-
-        document.querySelector('.btn-close').addEventListener('click', function(event) {
-            document.querySelector('.modal').style.display = 'none';
-        });
-
-        document.querySelector('.readingyears').addEventListener('click', function(event) {
-            if (event.target.classList.contains('yearbtn')) {
-                
-                for (var item of event.target.parentNode.children) {
-                    item.classList.remove('current');
+        const table = document.querySelector('.table-content');
+    
+        if(table){
+            table.addEventListener('click', function(event) {
+                if (event.target.classList.contains('delete-book')) {
+                    const clickedId = event.target.dataset.id;
+                    const clickedName = event.target.dataset.name;
+                    deleteBook(
+                        clickedId, 
+                        clickedName
+                    );
                 }
-                
-                event.target.classList.add('current')
-                
-                const clickedyear = event.target.dataset.id;
-                localStorage.setItem('year', clickedyear);
-                getBooks(clickedyear);
-            }
-        });
+            });
+        }
+
+        const btnAddBook = document.querySelector('.add-book');
+        const btnClose = document.querySelector('.btn-close');
+        const readingyears = document.querySelector('.readingyears');
+        
+
+        if(btnAddBook){
+            btnAddBook.addEventListener('click', function(event) {
+                document.querySelector('.modal').style.display = 'block';
+            });
+        }
+
+        if(btnClose){
+            btnClose.addEventListener('click', function(event) {
+                document.querySelector('.modal').style.display = 'none';
+            });
+        }
+
+        if(readingyears){
+            readingyears.addEventListener('click', function(event) {
+                if (event.target.classList.contains('yearbtn')) {
+                    
+                    for (var item of event.target.parentNode.children) {
+                        item.classList.remove('current');
+                    }
+                    
+                    event.target.classList.add('current')
+                    
+                    const clickedyear = event.target.dataset.id;
+                    localStorage.setItem('year', clickedyear);
+                    getBooks(clickedyear);
+                }
+            });
+        }
     }
     
     return { render }

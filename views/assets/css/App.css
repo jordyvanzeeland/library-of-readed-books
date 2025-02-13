@@ -13,6 +13,10 @@ h3{
     margin-bottom: 20px;
 }
 
+label{
+    margin-bottom:5px;
+}
+
 .header .navbar{
     background-color: transparent !important;
     padding: 30px 0; 
@@ -53,18 +57,46 @@ h3{
 }
 
 .login{
-    background: #ffffff;
-    border-radius: 10px;
-    padding: 50px;
-    box-shadow: 1px 1px 10px rgba(0,0,0,0.1);
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
     max-width: 500px;
     width: 100%;
     display: block;
     margin: auto;
 }
 
+.loginlogo{
+    font-size:20px;
+    width: 100%;
+    margin-right: 0;
+    text-align: center;
+}
+
+.loginlogo .icon{
+    font-size:25px;
+    width:35px;
+    height:35px;
+}
+
+.login form{
+    background: #ffffff;
+    box-shadow: 1px 1px 10px rgba(0,0,0,0.1);
+    padding: 50px;
+    max-width: 500px;
+    width: 100%;
+    border-radius: 10px;
+}
+
 .login input{
     font-size: 14px;
+}
+
+#submitlogin{
+    width:100%;
+    padding: 10px;
 }
 
 .bookslist{
