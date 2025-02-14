@@ -1,6 +1,6 @@
 <?php
-    namespace App\Controller;
-    use App\Controller\AuthController;
+    namespace App\Controllers\Core;
+    use App\Controllers\Core\AuthController;
     
     class PageController{
         public $currentUser;
@@ -8,7 +8,7 @@
 
         public function __construct(){
             $this->currentUser = (new AuthController())->getCurrentUser();
-            $this->viewsfolder = dirname(__DIR__, 1) . "/views/";
+            $this->viewsfolder = dirname(__DIR__, 2) . "/views/";
         }
 
         public function renderTemplate(string $tmpname, ){

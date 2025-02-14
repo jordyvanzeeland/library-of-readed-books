@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controllers\Core;
 use App\Functions;
 
 # Controller for user authentication and authorization

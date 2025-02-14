@@ -1,8 +1,8 @@
 <?php
 namespace App;
 require "./vendor/autoload.php"; 
-use App\Controller\BooksController;
-use App\Controller\AuthController;
+use App\Controllers\BooksController;
+use App\Controllers\Core\AuthController;
 
 error_reporting(E_ALL);
 ini_set('display_errors', 1);

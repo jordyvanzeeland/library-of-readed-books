@@ -1,6 +1,6 @@
 <?php
     namespace App;
-    use App\Controller\AuthController;
+    use App\Controllers\Core\AuthController;
 
     class Functions{
         private $db;

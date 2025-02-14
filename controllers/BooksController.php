@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Controller;
-use App\Controller\AuthController;
-use App\Controller\DBQueryController;
+namespace App\Controllers;
+use App\Controllers\Core\AuthController;
+use App\Controllers\Core\DBQueryController;
 
 use App\Functions;
 use PDO;
@@ -39,7 +39,10 @@ class BooksController {
      */
 
     public function findBookWithId(int $bookid){
-        $book = $this->dbQuery->select('books', ["*"], ["id" => $bookid]);
+        $book = $this->dbQuery->select(["*"])
+                    ->from('books')
+                    ->where(["id" => $bookid])
+                    ->execute('one');
 
         if (count($book) === 0) {
             echo json_encode(["message" => "Book not found."]);
@@ -52,7 +55,11 @@ class BooksController {
         $this->userAuthenticated();
 
         try {
-            $years = $this->dbQuery->select('books', ["YEAR(readed) as year", "COUNT(YEAR(readed)) as yearCount"], [], "YEAR(readed)");
+            $years = $this->dbQuery->select(["YEAR(readed) as year", "COUNT(YEAR(readed)) as yearCount"])
+                        ->from('books')
+                        ->groupby("YEAR(readed)")
+                        ->execute('all');
+
             echo json_encode($years);
         } catch (PDOException $e) {
             echo json_encode(["message" => "Error: " . $e]);
@@ -67,7 +74,10 @@ class BooksController {
         $this->userAuthenticated();
 
         try {
-            $books = $this->dbQuery->select('books', ["*"]);
+            $books = $this->dbQuery->select(["*"])
+                        ->from('books')
+                        ->execute('all');
+
             echo json_encode($books);
         } catch (PDOException $e) {
             echo json_encode(["message" => "Error: " . $e]);
@@ -82,7 +92,11 @@ class BooksController {
         $this->userAuthenticated();
 
         try {
-            $books = $this->dbQuery->select('books', ["*"], ['YEAR(readed)' => $year]);
+            $books = $this->dbQuery->select(["*"])
+                        ->from('books')
+                        ->where(['YEAR(readed)' => $year])
+                        ->execute('all');
+                        
             echo json_encode($books);
         } catch (PDOException $e) {
             echo json_encode(["message" => "Error: " . $e]);

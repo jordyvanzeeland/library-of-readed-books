@@ -1,11 +1,14 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controllers\Core;
 
 class DBQueryController{
     private $db;
     private $configfile;
     private $config;
+    private $query;
+    private $currentQuery;
+    private $params;
 
     /**
      * Create a database connection given the credentials in the config.json file
@@ -13,7 +16,7 @@ class DBQueryController{
      */
 
     public function __construct(){
-        $this->configfile = file_get_contents(dirname(__DIR__, 1) . "/config.json");
+        $this->configfile = file_get_contents(dirname(__DIR__, 2) . "/config.json");
         $this->config = json_decode($this->configfile);
         $this->db = new \PDO('mysql:dbname=' . $this->config->db_name . ';host=' . $this->config->db_host . ';charset=utf8mb4', $this->config->db_user, $this->config->db_pass);
     }
@@ -22,13 +25,21 @@ class DBQueryController{
      * Handle the select query
      */
 
-    public function select(string $tablename, array $columns, array $where = [], string $groupby = '', array $order = []){
+    public function select(array $columns){
         $columns = implode(',', $columns);
+        $this->query = "SELECT " . $columns;
+        
+        return $this;
+    }
+
+    public function from(string $tablename){
+        $this->query .= " FROM " .$tablename;
+
+        return $this;
+    }
+
+    public function where(array $where = []){
         $whereQuery = '';
-        $orderQuery = '';
-        $groupQuery = '';
-        $selectParams = [];
-        $orderParams = [];
 
         if(!empty($where)){
             $whereParts = [];
@@ -40,30 +51,51 @@ class DBQueryController{
                 }
                 
                 $whereParts[] = $key . " = " . $param;
-                $selectParams[$param] = $value;
+                $this->params[$param] = $value;
             }
             $whereQuery = " WHERE " . implode(' AND ', $whereParts);
         }
 
+        $this->query .= $whereQuery;
+        
+        return $this;
+    }
+
+    public function orderby(array $order = []){
+        $orderQuery = '';
+
         if(!empty($order)){
-            $orderParts = [];
             foreach ($order as $key => $value) {
                 $direction = strtoupper($value) == 'DESC' ? 'DESC' : 'ASC';
-                $param = ":" . $key;
-                $orderParts[] = $key . " " . $direction;
             }
+
             $orderQuery = " ORDER BY $key $direction";
         }
 
-        if(!empty($groupby)){
-            $groupQuery = ' GROUP BY ' . $groupby;
-        }
-        
-        $query = "SELECT " . $columns . " FROM " . $tablename . $whereQuery . $orderQuery . $groupQuery;
+        $this->query .= $orderQuery;
 
-        $books = $this->db->prepare($query);
-        $books->execute($selectParams);
-        return $books->fetchAll();
+        return $this;
+    }
+
+    public function groupby(string $groupby = ''){
+        if(!empty($groupby)){
+            $this->query .= ' GROUP BY ' . $groupby;
+        }
+
+        return $this;
+    }
+
+    public function execute(string $fetch = ''){
+        $this->currentQuery = $this->db->prepare($this->query);
+        $this->currentQuery->execute($this->params);
+
+        if($fetch && $fetch == 'all'){
+            return $this->currentQuery->fetchAll();
+        }else if($fetch && $fetch == 'one'){
+            return $this->currentQuery->fetch();
+        }
+
+        return $this;
     }
 
     /**
