@@ -12,11 +12,13 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-          
-      - name: Upload files via SFTP
-        uses: SamKirkland/FTP-Deploy-Action@4.3.2
+
+      - name: SFTP upload
+        uses: Dylan700/sftp-upload-action@latest
         with:
           server: ${{ secrets.SFTP_SERVER }}
           username: ${{ secrets.SFTP_USERNAME }}
           password: ${{ secrets.SFTP_PASSWORD }}
-          server-dir: ${{ secrets.FILES_PATH }}
+          port: 22
+          uploads: |
+            ./ => ${{ secrets.FILES_PATH }}
