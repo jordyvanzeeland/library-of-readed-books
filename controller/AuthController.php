@@ -40,7 +40,7 @@ class AuthController{
         try {
             $this->delightauth->logOutEverywhereElse();
             $this->delightauth->destroySession();
-            header("Refresh:0;url=/library-of-readed-books/");
+            header("Refresh:0;url=/");
         }
         catch (\Delight\Auth\NotLoggedInException $e) {
             die('Not logged in');

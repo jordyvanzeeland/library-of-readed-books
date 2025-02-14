@@ -1,5 +1,5 @@
 export const fetchAction = async (actionData) => {
-    return fetch('/library-of-readed-books/actions.php', {
+    return fetch('/actions.php', {
         method: "POST",
         headers: {
             'Accept': 'application/json',
