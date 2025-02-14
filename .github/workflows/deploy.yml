@@ -12,19 +12,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Deploy PHP files via SFTP
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: "${{ secrets.SFTP_SERVER }}"
-          username: "${{ secrets.SFTP_USERNAME }}"
-          password: "${{ secrets.SFTP_PASSWORD }}"
-          port: "${{ secrets.SFTP_PORT || 22 }}"
-          script: |
-            mkdir -p ${{ secrets.FILES_PATH }}
-            cd ${{ secrets.FILES_PATH }}
-            rm -rf *
-            exit
           
       - name: Upload files via SFTP
         uses: appleboy/scp-action@master
@@ -36,3 +23,4 @@ jobs:
           source: "./"
           target: "${{ secrets.FILES_PATH }}"
           strip_components: 1
+          rm: true
