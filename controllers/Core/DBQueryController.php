@@ -7,6 +7,7 @@ class DBQueryController{
     private $configfile;
     private $config;
     private $query;
+    private $insertData;
     private $currentQuery;
     private $params;
 
@@ -85,61 +86,62 @@ class DBQueryController{
         return $this;
     }
 
-    public function execute(string $fetch = ''){
+    public function fetchAll(){
         $this->currentQuery = $this->db->prepare($this->query);
         $this->currentQuery->execute($this->params);
+        return $this->currentQuery->fetchAll();
+    }
 
-        if($fetch && $fetch == 'all'){
-            return $this->currentQuery->fetchAll();
-        }else if($fetch && $fetch == 'one'){
-            return $this->currentQuery->fetch();
-        }
-
-        return $this;
+    public function fetchOne(){
+        $this->currentQuery = $this->db->prepare($this->query);
+        $this->currentQuery->execute($this->params);
+        return $this->currentQuery->fetch();
     }
 
     /**
      * Handle the insert query
      */
 
-    public function insert(string $tablename, array $data){
+    public function insertInto(string $tablename){
+        $this->query = "INSERT INTO $tablename ";
+        return $this;
+    }
+
+    public function data(array $data){
         $columns = implode(',', array_keys($data));
         $placeholders = ':' . implode(', :', array_keys($data));
-        $query = "INSERT INTO $tablename ($columns) VALUES ($placeholders)";
-
-        $book = $this->db->prepare($query);
-        $result = $book->execute(array_combine(explode(', ', $placeholders), array_values($data)));
-        return $result;
+        $this->query .= "($columns) VALUES ($placeholders)";
+        $this->insertData = array_combine(explode(', ', $placeholders), array_values($data));
+        return $this;
     }
 
     /**
      * Handle the update query
      */
 
-    public function update(string $tablename, array $data, array $where){
+    public function update(string $tablename){
+        $this->query = "UPDATE $tablename";
+        return $this;
+    }
+
+    public function set(array $data){
         $updateParts = [];
-        $updateParams = [];
 
         foreach($data as $key => $value){
             $param = ":" . $key;
             $updateParts[] = "$key = $param";
-            $updateParams[$param] = $value;
-        }
-
-        $whereParts = [];
-        foreach ($where as $key => $value) {
-            $param = ":" . $key;
-            $whereParts[] = $key . " = " . $param;
-            $whereParams[$param] = $value;
+            $this->params[$param] = $value;
         }
 
         $updateQuery = implode(', ', $updateParts);
-        $whereQuery = implode(' AND ', $whereParts);
+        $this->query .= " SET $updateQuery";
 
-        $query = "UPDATE $tablename SET $updateQuery WHERE $whereQuery";
+        return $this;
+    }
 
-        $book = $this->db->prepare($query);
-        $result = $book->execute($updateParams);
+    public function execute(){
+        $book = $this->db->prepare($this->query);
+        $result = $book->execute($this->insertData ? $this->insertData : $this->params);
         return $result;
     }
 
@@ -147,18 +149,8 @@ class DBQueryController{
      * Handle the delete query
      */
 
-    public function delete($tablename, $where){
-        $whereParts = [];
-        $whereParams = [];
-        foreach ($where as $key => $value) {
-            $param = ":" . $key;
-            $whereParts[] = $key . " = " . $param;
-            $whereParams[$param] = $value;
-        }
-        $whereQuery = implode(' AND ', $whereParts);
-        $query = "DELETE FROM $tablename WHERE $whereQuery";
-        $book = $this->db->prepare($query);
-        $result = $book->execute($whereParams);
-        return $result;
+    public function delete(){
+        $this->query = "DELETE ";
+        return $this;
     }
 }

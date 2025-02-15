@@ -42,7 +42,7 @@ class BooksController {
         $book = $this->dbQuery->select(["*"])
                     ->from('books')
                     ->where(["id" => $bookid])
-                    ->execute('one');
+                    ->fetchOne();
 
         if (count($book) === 0) {
             echo json_encode(["message" => "Book not found."]);
@@ -58,7 +58,7 @@ class BooksController {
             $years = $this->dbQuery->select(["YEAR(readed) as year", "COUNT(YEAR(readed)) as yearCount"])
                         ->from('books')
                         ->groupby("YEAR(readed)")
-                        ->execute('all');
+                        ->fetchAll();
 
             echo json_encode($years);
         } catch (PDOException $e) {
@@ -76,7 +76,7 @@ class BooksController {
         try {
             $books = $this->dbQuery->select(["*"])
                         ->from('books')
-                        ->execute('all');
+                        ->fetchAll();
 
             echo json_encode($books);
         } catch (PDOException $e) {
@@ -95,8 +95,8 @@ class BooksController {
             $books = $this->dbQuery->select(["*"])
                         ->from('books')
                         ->where(['YEAR(readed)' => $year])
-                        ->execute('all');
-                        
+                        ->fetchAll();
+
             echo json_encode($books);
         } catch (PDOException $e) {
             echo json_encode(["message" => "Error: " . $e]);
@@ -111,7 +111,10 @@ class BooksController {
         $this->userAuthenticated();
 
         try {
-            $book = $this->dbQuery->insert('books', ["name" => $name, "author" => $author, "genre" => $genre, "readed" => $readed, "rating" => $rating, "en" => $en]);
+            $book = $this->dbQuery->insertInto('books')
+                        ->data(["name" => $name, "author" => $author, "genre" => $genre, "readed" => $readed, "rating" => $rating, "en" => $en])
+                        ->execute();
+
             echo json_encode(["message" => "Boek " . $name . " is toegevoegd"]);
         } catch (PDOException $e) {
             echo json_encode(["message" => "Error: " . $e]);
@@ -129,8 +132,12 @@ class BooksController {
         try {
             $book = $this->findBookWithId($bookId);
 
-            if($book['data']){
-                $book = $this->dbQuery->update('books', ["name" => $name, "author" => $author, "genre" => $genre, "readed" => $readed, "rating" => $rating, "en" => $en], ["id" => $bookId]);
+            if($book->id){
+                $book = $this->dbQuery->update('books')
+                        ->set(["name" => $name, "author" => $author, "genre" => $genre, "readed" => $readed, "rating" => $rating, "en" => $en])
+                        ->where(["id" => $bookId])
+                        ->execute();
+
                 echo json_encode(["success" => true, "message" => "Book '$name' has been updated."]);
             }
         } catch (PDOException $e) {
@@ -150,8 +157,12 @@ class BooksController {
             $book = $this->findBookWithId($bookId);
             $book = json_decode($book);
             
-            if($book[0]->id){
-                $book = $this->dbQuery->delete('books', ["id" => $bookId]);
+            if($book->id){
+                $book = $this->dbQuery->delete()
+                        ->from("books")
+                        ->where(["id" => $bookId])
+                        ->execute();
+
                 echo json_encode(["message" => "Book with ID $bookName has been deleted."]);
             }
         } catch (PDOException $e) {
